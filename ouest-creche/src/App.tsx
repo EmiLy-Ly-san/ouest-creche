@@ -1,9 +1,20 @@
-export default function App() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-pink-100">
-      <h1 className="text-4xl font-bold text-pink-700">
-        Tu crèches où 👶 ?
-      </h1>
-    </div>
-  );
-}
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Layout from '@/components/Layout';
+import Home from '@/pages/Home';
+import Search from '@/pages/Search';
+import PageNotFound from '@/pages/PageNotFound';
+
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      { path: '/', element: <Home /> },
+      { path: '/search', element: <Search /> },
+      { path: '*', element: <PageNotFound /> },
+    ],
+  },
+]);
+
+const App = () => <RouterProvider router={router} />;
+
+export default App;
