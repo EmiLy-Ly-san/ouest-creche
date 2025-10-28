@@ -9,7 +9,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <footer className="fbottom-0 left-0 w-full bg-white shadow-inner py-3 text-center text-gray-500 text-sm">
-        © Les canapés 2025
+        © Le studio canapé 2025
       </footer>
     </div>
   );
