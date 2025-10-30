@@ -3,6 +3,7 @@ export interface Nursery {
   id: number;
   name: string;
   ville: string;
+  horaire: string;
   lat: number;
   lng: number;
   placesDispo: number;

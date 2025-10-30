@@ -2,6 +2,7 @@ type Creche = {
   id: number;
   name: string;
   ville: string;
+  horaire: string;
   placesDispo: number;
   image?: string;
   onReserve?: () => void;
@@ -12,6 +13,8 @@ export default function CrecheCard({
   name,
   placesDispo,
   image,
+  ville,
+  horaire,
   onReserve,
   onNotify,
 }: Creche) {
@@ -29,9 +32,9 @@ export default function CrecheCard({
 
         {/* Image de certification */}
         <img
-          src="certif.svg"
+          src="certif-creche.svg"
           alt="Certification Tribu"
-          className="absolute bottom-29 left-70 w-12 h-auto rotate-10 drop-shadow-md"
+          className="absolute bottom-27 left-70 md:left-93 w-12 h-auto rotate-10 drop-shadow-md"
         />
       </div>
 
@@ -64,7 +67,7 @@ export default function CrecheCard({
 
         {/* Adresse complète */}
         <p className="text-sm text-gray-600">
-          Nantes Centre, 5 rue Henri Picherit
+          {ville}
         </p>
 
         {/* Ligne 2 : icônes + infos */}
@@ -86,7 +89,7 @@ export default function CrecheCard({
               alt="Horaires"
               className="w-4 h-4 object-contain"
             />
-            <span className="text-gray-700">6h - 20h</span>
+            <span className="text-gray-700">{horaire}</span>
           </div>
         </div>
 

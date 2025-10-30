@@ -13,23 +13,27 @@ import ModalNotification from "./ModalNotification";
 
 // === Leaflet marker icons ===
 const crecheIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconUrl: "pin-border-purple.svg",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
 
+const crecheIconSelected = new L.Icon({
+  iconUrl: "pin-purple.svg",
+  iconSize: [30, 45], // un peu plus grand
+  iconAnchor: [15, 45],
+});
+
 const userIcon = new L.Icon({
   iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    "pin-home.svg",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
 
 const entrepriseIcon = new L.Icon({
   iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    "pin-work-border.svg",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
@@ -65,7 +69,6 @@ export default function MapView() {
   });
 
   /// Géolocalisation + détection automatique de la ville
-  // 🎯 Géolocalisation + détection automatique de la ville
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -122,7 +125,10 @@ export default function MapView() {
     }
   };
 
-  const confirmReservation = () => setStep("confirm");
+  const confirmReservation = (currentSelection: string[]) => {
+    setSelectedChildren(currentSelection);
+    setStep("confirm");
+  };
 
   return (
     <div
@@ -138,8 +144,8 @@ export default function MapView() {
         {position && (
           <MapContainer
             attributionControl={false}
-            center={position}
-            zoom={11}
+            zoom={11.4}
+            center={[position[0] - 0.05, position[1]]}
             zoomControl={false}
             className="h-full w-full z-0"
             aria-label="Carte centrée sur votre position actuelle"
@@ -150,7 +156,7 @@ export default function MapView() {
             />
 
             {/* Marqueur utilisateur */}
-            <Marker position={position} icon={userIcon}>
+            <Marker position={position} icon={userIcon} zIndexOffset={1000}>
               <Popup>
                 {user.prenom} {user.nom} <br /> Vous êtes ici
               </Popup>
@@ -160,6 +166,7 @@ export default function MapView() {
             <Marker
               position={[user.entreprise.lat, user.entreprise.lng]}
               icon={entrepriseIcon}
+              zIndexOffset={1000}
             >
               <Popup>
                 <strong>{user.entreprise.nom}</strong> <br />
@@ -172,15 +179,17 @@ export default function MapView() {
               <Marker
                 key={c.id}
                 position={[c.lat, c.lng]}
-                icon={crecheIcon}
-                aria-label={`Crèche ${c.name} à ${c.ville}`}
+                icon={selectedCreche?.id === c.id ? crecheIconSelected : crecheIcon}
+                eventHandlers={{
+                  click: () => setSelectedCreche(c),
+                }}
               >
                 <Popup>
                   <CrechePopup
                     name={c.name}
                     ville={c.ville}
                     placesDispo={c.placesDispo}
-                    onClick={() => setSelectedCrecheFromMap(c)}
+                    onClick={() => setSelectedCreche(c)}
                   />
                 </Popup>
               </Marker>
@@ -246,11 +255,12 @@ export default function MapView() {
               key={c.id}
               {...c}
               onReserve={() => {
+                setSelectedChildren([]); // ✅ Réinitialise la sélection ici
                 setSelectedCreche(c);
                 setStep("select");
-                setSelectedChildren([]);
               }}
               onNotify={() => {
+                setSelectedChildren([]); // ✅ idem pour la modale de notification
                 setSelectedCreche(c);
                 setStep("notify");
               }}
@@ -283,7 +293,7 @@ export default function MapView() {
           nursery={selectedCreche}
           selectedChildren={selectedChildren}
           toggleChild={toggleChild}
-          onConfirm={confirmReservation}
+          onConfirm={() => confirmReservation(selectedChildren)} // ✅ ici
           onClose={() => setStep(null)}
         />
       )}
@@ -292,7 +302,7 @@ export default function MapView() {
         <ModalConfirmation
           user={user}
           nursery={selectedCreche}
-          children={selectedChildren}
+          selectedChildren={selectedChildren}
           onClose={() => {
             setStep(null);
             setSelectedCreche(null);
