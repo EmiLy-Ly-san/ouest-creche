@@ -17,12 +17,14 @@ export default function ModalSelectChildren({
   onConfirm,
   onClose,
 }: ModalSelectChildrenProps) {
+  const hasSelection = selectedChildren.length > 0;
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-1000">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
       <div className="bg-[#feffee] rounded-2xl shadow-xl p-6 w-80 text-center">
         <h2 className="text-lg font-semibold mb-3">Hello {user.prenom} 👋</h2>
         <p className="text-gray-700 mb-3">
-          Choisissez les enfants pour <strong>{nursery.name}</strong>:
+          Choisissez les enfants pour <strong>{nursery.name}</strong> :
         </p>
 
         <div className="flex flex-col gap-2 mb-4">
@@ -30,8 +32,8 @@ export default function ModalSelectChildren({
             <button
               key={child}
               onClick={() => toggleChild(child, nursery.placesDispo)}
-              className={`py-2 rounded-lg border transition flex-1 
-        ${selectedChildren.includes(child)
+              className={`py-2 rounded-lg border transition 
+                ${selectedChildren.includes(child)
                   ? "border-[#202940] bg-[#202940] text-white"
                   : "border-[#202940] text-[#202940] hover:bg-[#202940] hover:text-white"
                 }`}
@@ -41,9 +43,15 @@ export default function ModalSelectChildren({
           ))}
         </div>
 
+        {/* ✅ Bouton Confirmer désactivé sans sélection */}
         <button
           onClick={onConfirm}
-          className="bg-[#202940] text-white px-4 py-2 rounded-lg hover:bg-[#495d8b] transition"
+          disabled={!hasSelection}
+          className={`w-full px-4 py-2 rounded-lg font-semibold text-white transition
+            ${hasSelection
+              ? "bg-[#202940] hover:bg-[#495d8b]"
+              : "bg-gray-400 cursor-not-allowed"
+            }`}
         >
           Confirmer
         </button>
