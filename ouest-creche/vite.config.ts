@@ -6,7 +6,7 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   // Cette ligne indique à Vite où sera hébergée ton app sur GitHub Pages
-  base: '/ouest-creche/',
+  base: process.env.NODE_ENV === 'production' ? '/ouest-creche/' : '/',
 
   plugins: [react(), tailwindcss()],
 

@@ -1,5 +1,3 @@
-import React from "react";
-
 type PopupProps = {
   name: string;
   ville: string;
